@@ -54,10 +54,11 @@ class Sale(models.Model):
     item_description = models.TextField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     sale_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    
     
     class Meta:
         ordering = ['-sale_date']
     
     def __str__(self):
+
         return f"${self.amount} - {self.contact.name}"
