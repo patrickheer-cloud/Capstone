@@ -1,0 +1,48 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Contacts - CRM System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 20px;">Contacts</h2>
+    
+    {% if due_tasks %}
+    <div class="alert alert-warning">
+        <strong>⏰ Tasks Due Today:</strong>
+        <ul style="margin-top: 10px; margin-left: 20px;">
+            {% for task in due_tasks %}
+                <li>{{ task.description }} - <a href="{% url 'contact_detail' task.contact.pk %}">{{ task.contact.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if contacts %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contact in contacts %}
+                <tr>
+                    <td><a href="{% url 'contact_detail' contact.pk %}" style="color: #3498db; text-decoration: none; font-weight: 500;">{{ contact.name }}</a></td>
+                    <td>{{ contact.email|default:"-" }}</td>
+                    <td>{{ contact.phone|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'contact_detail' contact.pk %}" class="btn" style="padding: 5px 15px; font-size: 12px;">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">No contacts yet. <a href="{% url 'add_contact' %}">Add your first contact</a></p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,93 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}{{ contact.name }} - CRM System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 20px;">{{ contact.name }}</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 30px;">
+        <div>
+            <strong>Email:</strong><br>
+            {{ contact.email|default:"Not provided" }}
+        </div>
+        <div>
+            <strong>Phone:</strong><br>
+            {{ contact.phone|default:"Not provided" }}
+        </div>
+        <div>
+            <strong>Address:</strong><br>
+            {{ contact.address|default:"Not provided" }}
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
+        <a href="{% url 'log_activity' contact.pk %}" class="btn">Log Activity</a>
+        <a href="{% url 'add_task' contact.pk %}" class="btn">Add Task</a>
+        <a href="{% url 'log_sale' contact.pk %}" class="btn btn-success">Log Sale</a>
+        <a href="{% url 'sales_list' contact.pk %}" class="btn btn-secondary">Sales List View</a>
+        <a href="{% url 'sales_history' contact.pk %}" class="btn btn-secondary">Sales History</a>
+    </div>
+
+    {% if tasks %}
+    <div style="margin-bottom: 30px;">
+        <h3 style="margin-bottom: 15px;">Pending Tasks</h3>
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+            {% for task in tasks %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin-bottom: 10px; background-color: white; border-radius: 4px;">
+                <div>
+                    <strong>{{ task.description }}</strong><br>
+                    <small style="color: #7f8c8d;">Due: {{ task.due_date|date:"m/d/Y" }}</small>
+                </div>
+                <a href="{% url 'complete_task' task.pk %}" class="btn" style="padding: 5px 15px; font-size: 12px;">Complete</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if sales %}
+    <div style="margin-bottom: 30px;">
+        <h3 style="margin-bottom: 15px;">Recent Sales</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.item_description }}</td>
+                    <td>${{ sale.amount }}</td>
+                    <td>{{ sale.sale_date|date:"m/d/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <div>
+        <h3 style="margin-bottom: 15px;">Activity Timeline</h3>
+        {% if activities %}
+            {% for activity in activities %}
+            <div style="border-left: 3px solid #3498db; padding-left: 20px; margin-bottom: 20px; position: relative;">
+                <div style="position: absolute; left: -8px; top: 5px; width: 12px; height: 12px; background-color: #3498db; border-radius: 50%;"></div>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong style="color: #2c3e50;">{{ activity.activity_type }}</strong>
+                        <small style="color: #7f8c8d;">{{ activity.created_at|date:"m/d/Y g:i A" }}</small>
+                    </div>
+                    <p>{{ activity.summary }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #7f8c8d;">No activities logged yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

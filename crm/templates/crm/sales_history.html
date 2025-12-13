@@ -1,0 +1,71 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Sales History - {{ contact.name }}{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 20px;">Sales History for {{ contact.name }}</h2>
+    
+    {% if months %}
+        <canvas id="salesChart" width="400" height="200"></canvas>
+    {% else %}
+        <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">No sales data available for chart.</p>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'contact_detail' contact.pk %}" class="btn btn-secondary">Back to Contact</a>
+    </div>
+</div>
+
+<script>
+    {% if months %}
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ months|safe }},
+            datasets: [{
+                label: 'Sales ($)',
+                data: {{ amounts|safe }},
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                borderColor: 'rgba(52, 152, 219, 1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Sales: $' + context.parsed.y;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

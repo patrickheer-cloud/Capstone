@@ -1,0 +1,40 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Sales List - {{ contact.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 20px;">Sales List for {{ contact.name }}</h2>
+    
+    <div style="margin-bottom: 20px;">
+        <strong>Total Sales: ${{ total }}</strong>
+    </div>
+    
+    {% if sales %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.item_description }}</td>
+                    <td>${{ sale.amount }}</td>
+                    <td>{{ sale.sale_date|date:"m/d/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">No sales logged yet.</p>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'contact_detail' contact.pk %}" class="btn btn-secondary">Back to Contact</a>
+    </div>
+</div>
+{% endblock %}

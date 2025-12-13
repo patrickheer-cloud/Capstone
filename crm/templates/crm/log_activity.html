@@ -1,0 +1,31 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Log Activity - {{ contact.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 20px;">Log Activity for {{ contact.name }}</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="activity_type">Activity Type *</label>
+            <select id="activity_type" name="activity_type" required>
+                <option value="">Select type...</option>
+                <option value="Call">Call</option>
+                <option value="Email">Email</option>
+                <option value="Meeting">Meeting</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="summary">Summary *</label>
+            <textarea id="summary" name="summary" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn">Save Activity</button>
+        <a href="{% url 'contact_detail' contact.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
